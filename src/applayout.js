@@ -1,12 +1,12 @@
 goog.provide('AppLayout');
-goog.require('goog.string');
 goog.require('goog.dom');
-goog.require('goog.dom.classes');
 goog.require('goog.dom.ViewportSizeMonitor');
-goog.require('goog.style');
+goog.require('goog.dom.classes');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.math.Size');
+goog.require('goog.string');
+goog.require('goog.style');
 
 /**
  * A global variable that represents of our pagewide styles have been added
@@ -26,7 +26,7 @@ AppLayout.Panel = function(settings) {
             '.appLayoutDiv { margin: 0; padding: 0; border: 0; }' +
             '.appLayoutHidden { display: none; height: 0px; width: 0px}' +
             '</style>');
-        goog.dom.appendChild(document.head, appLayoutStyles);
+        goog.dom.append(document.head, appLayoutStyles);
         AppLayout.isStyleLoaded = true;
     }
 
@@ -42,42 +42,42 @@ AppLayout.Panel = function(settings) {
     if ('content' in settings) {
         this.contentHolder = goog.dom.htmlToDocumentFragment('<div class="appLayoutDiv"></div>');
         goog.dom.append(this.element, this.contentHolder);
-        if (typeof(settings.content) == 'string') {
-            var htmlContent = goog.dom.htmlToDocumentFragment(settings.content);
+        if (typeof(settings['content']) == 'string') {
+            var htmlContent = goog.dom.htmlToDocumentFragment(settings['content']);
             goog.dom.append(this.contentHolder, htmlContent);
         }
         else {
-            goog.dom.append(this.contentHolder, settings.contentElement);
+            goog.dom.append(this.contentHolder, settings['content']);
         }
     }
 
     if ('id' in settings) {
-        goog.dom.setProperties(this.element, {'id':settings.id});
+        goog.dom.setProperties(this.element, {'id': settings['id']});
     }
 
     if ('width' in settings) {
-        this.width = settings.width;
+        this.width = settings['width'];
     }
 
     if ('height' in settings) {
-        this.height = settings.height;
+        this.height = settings['height'];
     }
 
     if ('hidden' in settings) {
-        this.hidden = settings.hidden;
+        this.hidden = settings['hidden'];
     }
 
     if ('cls' in settings) {
-        goog.dom.classes.add(this.element, settings.cls);
+        goog.dom.classes.add(this.element, settings['cls']);
     }
 
     if ('dock' in settings) {
-        this.dock = settings.dock;
+        this.dock = settings['dock'];
     }
 
     if ('children' in settings) {
-        for (var i = 0, len = settings.children.length; i < len; i++) {
-            var child = settings.children[i];
+        for (var i = 0, len = settings['children'].length; i < len; i++) {
+            var child = settings['children'][i];
             if (child instanceof AppLayout.Panel) {
                 this.addChild(child);
             }
@@ -285,3 +285,10 @@ AppLayout.Panel.prototype.makeFullScreen = function() {
     });
     goog.dom.classes.add(document.body, 'appFullScreenBody');
 };
+
+goog.exportSymbol('AppLayout.Panel', AppLayout.Panel);
+goog.exportProperty(AppLayout.Panel.prototype, 'addChild', AppLayout.Panel.prototype.addChild);
+goog.exportProperty(AppLayout.Panel.prototype, 'removeChild', AppLayout.Panel.prototype.removeChild);
+goog.exportProperty(AppLayout.Panel.prototype, 'update', AppLayout.Panel.prototype.update);
+goog.exportProperty(AppLayout.Panel.prototype, 'getElement', AppLayout.Panel.prototype.getElement);
+goog.exportProperty(AppLayout.Panel.prototype, 'makeFullScreen', AppLayout.Panel.prototype.makeFullScreen);
