@@ -5,16 +5,6 @@ endsWith = function(str, suffix) {
     return l >= 0 && str.indexOf(suffix, l) == l;
 };
 
-Object.prototype.getName = function() {
-   var funcNameRegex = /function (.{1,})\(/;
-   var results = (funcNameRegex).exec((this).constructor.toString());
-   return (results && results.length > 1) ? results[1] : "";
-};
-
-AppLayout.makeFullScreen = function(panel) {
-    panel.isFullScreen = true;
-    panel.update();
-};
 
 AppLayout.isStyleLoaded = false;
 
@@ -74,7 +64,7 @@ AppLayout.Panel = function(settings) {
     if ("children" in settings) {
         for (var i = 0,len = settings.children.length; i < len; i++) {
             var child = settings.children[i];
-            if( child instanceof AppLayout.Panel) {
+            if (child instanceof AppLayout.Panel) {
                 this.addChild(child);
             }
             else {
@@ -201,3 +191,27 @@ AppLayout.Panel.prototype.resizeAllChildren = function(parentWidth, parentHeight
     }
 };
 
+AppLayout.Panel.prototype.makeFullScreen = function() {
+    if (this.parent != null) {
+        throw "Cannot make a panel full screen that has a parent.  Please detach first.";
+    }
+    this.fullScreenContainer = $('<div class="appLayoutDiv" style="position: absolute; top: 0px; left:0px"></div>').get(0);
+    $('body').append(this.fullScreenContainer);
+    $(this.fullScreenContainer).append(this.getElement());
+
+    var context = this;
+    var updateSize = function() {
+        var screenWidth = $(window).width();
+        var screenHeight = $(window).height();
+        $(context.fullScreenContainer).width(screenWidth);
+        $(context.fullScreenContainer).height(screenHeight);
+        context.width = screenWidth;
+        context.height = screenHeight;
+        context.update();
+    };
+
+    updateSize();
+    $(window).resize(function() {
+        updateSize();
+    });
+};
