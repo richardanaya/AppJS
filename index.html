@@ -42,21 +42,21 @@
     });
 
     var bluePanel = new AppLayout.Panel({
-        cls: "blue", height: "50px", width: "50px", dock: "left"
+        cls: "blue", width: "50px", dock: "left"
     });
 
     var panel = new AppLayout.Panel({
                 id: "blah", cls: "red", width: "600px", height: "400px",
                 content: '<div style="float:left">left</div><div style="float:right">right</div>Guten Tag <input type="button" id="btn" value="Hello world">',
                 children: [
-                    { cls: "blue", height: "50px", width: "100px", dock: "top" },
-                    { cls: "green", height: "50px", width: "200px", dock: "bottom" },
-                    { cls: "purple", height: "50px", width: "100px", dock: "top" },
-                    { cls: "yellow", height: "50px",  width: "200px", dock: "bottom" },
+                    { cls: "blue", height: "50px", dock: "top" },
+                    { cls: "green", height: "50px", dock: "bottom" },
+                    { cls: "purple", height: "50px", dock: "top" },
+                    { cls: "yellow", height: "50px", dock: "bottom" },
                     bluePanel,
-                    { cls: "green", height: "50px", width: "50px", dock: "right" },
-                    { cls: "green", height: "50px", width: "50px", dock: "left" },
-                    { cls: "purple", height: "50px", width: "50px", dock: "right",
+                    { cls: "green", width: "50px", dock: "right" },
+                    { cls: "green", width: "50px", dock: "left" },
+                    { cls: "purple", width: "50px", dock: "right",
                         children: [
                             {
                                 width: "50%", height: "50%", cls: "pink",

@@ -5,7 +5,6 @@ endsWith = function(str, suffix) {
     return l >= 0 && str.indexOf(suffix, l) == l;
 };
 
-
 AppLayout.isStyleLoaded = false;
 
 AppLayout.Panel = function(settings) {
@@ -140,46 +139,47 @@ AppLayout.Panel.prototype.resizeAllChildren = function(parentWidth, parentHeight
 
     for (var i = 0, len = currentPanel.children.length; i < len; i++) {
         var child = currentPanel.children[i];
-        $(child.getElement()).toggleClass("appLayoutHidden", child.hidden);
-        $(child.getElement()).css("position", "absolute");
+        var childElement = child.getElement();
+        $(childElement).toggleClass("appLayoutHidden", child.hidden);
+        $(childElement).css("position", "absolute");
         if (!child.hidden) {
             var childConvertedWidth = currentPanel.convertChildSizeDimensionBasedOnParentDimension(child.width, containerWidth);
             var childConvertedHeight = currentPanel.convertChildSizeDimensionBasedOnParentDimension(child.height, containerHeight);
             if (child.dock == "top") {
-                $(child.getElement()).css("top", currentTop);
-                $(child.getElement()).css("left", currentLeft);
-                $(child.getElement()).width(remainingWidth);
-                $(child.getElement()).height(childConvertedHeight);
+                $(childElement).css("top", currentTop);
+                $(childElement).css("left", currentLeft);
+                $(childElement).width(remainingWidth);
+                $(childElement).height(childConvertedHeight);
                 currentTop += childConvertedHeight;
                 remainingHeight -= childConvertedHeight;
             }
             else if (child.dock == "bottom") {
-                $(child.getElement()).css("top", remainingHeight + currentTop - childConvertedHeight);
-                $(child.getElement()).css("left", currentLeft);
-                $(child.getElement()).width(remainingWidth);
-                $(child.getElement()).height(childConvertedHeight);
+                $(childElement).css("top", remainingHeight + currentTop - childConvertedHeight);
+                $(childElement).css("left", currentLeft);
+                $(childElement).width(remainingWidth);
+                $(childElement).height(childConvertedHeight);
                 remainingHeight -= childConvertedHeight;
             }
             else if (child.dock == "left") {
-                $(child.getElement()).css("top", currentTop);
-                $(child.getElement()).css("left", currentLeft);
-                $(child.getElement()).width(childConvertedWidth);
-                $(child.getElement()).height(remainingHeight);
+                $(childElement).css("top", currentTop);
+                $(childElement).css("left", currentLeft);
+                $(childElement).width(childConvertedWidth);
+                $(childElement).height(remainingHeight);
                 currentLeft += childConvertedWidth;
                 remainingWidth -= childConvertedWidth;
             }
             else if (child.dock == "right") {
-                $(child.getElement()).css("top", currentTop);
-                $(child.getElement()).css("left", remainingWidth + currentLeft - childConvertedHeight);
-                $(child.getElement()).width(childConvertedWidth);
-                $(child.getElement()).height(remainingHeight);
+                $(childElement).css("top", currentTop);
+                $(childElement).css("left", remainingWidth + currentLeft - childConvertedWidth);
+                $(childElement).width(childConvertedWidth);
+                $(childElement).height(remainingHeight);
                 remainingWidth -= childConvertedWidth;
             }
             else {
-                $(child.getElement()).width(child.width);
-                $(child.getElement()).height(child.height);
+                $(childElement).width(child.width);
+                $(childElement).height(child.height);
             }
-            child.resizeAllChildren($(child.getElement()).width(), $(child.getElement()).height())
+            child.resizeAllChildren($(childElement).width(), $(childElement).height())
         }
     }
 
