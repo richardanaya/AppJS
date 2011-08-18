@@ -26,18 +26,28 @@
         .pink {
             background-color: pink;
         }
+        
+        .hoverPanel {
+            background-color: rgba(0,0,0,.5);
+            color: white;
+        }
     </style>
 </head>
 <body>
 <input type="button" value="show" id="showBtn">
 <script>
+    var hoverPanel = new AppLayout.Panel({
+        cls: "hoverPanel",
+        content: "Hello World!"
+    });
+
     var bluePanel = new AppLayout.Panel({
         cls: "blue", height: "50px", width: "50px", dock: "left"
     });
 
     var panel = new AppLayout.Panel({
                 id: "blah", cls: "red", width: "600px", height: "400px",
-                content: 'Guten Tag <input type="button" id="btn" value="Hello world">',
+                content: '<div style="float:left">left</div><div style="float:right">right</div>Guten Tag <input type="button" id="btn" value="Hello world">',
                 children: [
                     { cls: "blue", height: "50px", width: "100px", dock: "top" },
                     { cls: "green", height: "50px", width: "200px", dock: "bottom" },
@@ -58,19 +68,12 @@
             }
     );
 
-    var el = panel.getElement();
-    $('body').append(el);
-    panel.update();
+    panel.makeFullScreen();
+
+    var toggle = true;
     $('#btn').click(function() {
-        panel.width = 800;
-        panel.height = 600;
-        panel.update();
+        hoverPanel.makeFullScreen();
     });
-    $('#showBtn').click(function() {
-        bluePanel.hidden = true;
-        bluePanel.update();
-    });
-    panel.makeFullScreen()
 </script>
 </body>
 </html>

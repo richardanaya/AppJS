@@ -196,7 +196,12 @@ AppLayout.Panel.prototype.makeFullScreen = function() {
     if (this.parent != null) {
         throw "Cannot make a panel full screen that has a parent.  Please detach first.";
     }
-    this.fullScreenContainer = $('<div class="appLayoutDiv" style="position: absolute; top: 0px; left:0px"></div>').get(0);
+    var maxZ = Math.max.apply(null,$.map($('body > *'), function(e,n){
+           if($(e).css('position')=='absolute')
+                return parseInt($(e).css('z-index'))||1 ;
+           })
+    );
+    this.fullScreenContainer = $('<div class="appLayoutDiv" style="position: absolute; top: 0px; left:0px; z-index: '+maxZ+'"></div>').get(0);
     $('body').append(this.fullScreenContainer);
     $(this.fullScreenContainer).append(this.getElement());
 
