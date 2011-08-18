@@ -1,5 +1,12 @@
 goog.provide('AppLayout');
 goog.require('goog.string');
+goog.require('goog.dom');
+goog.require('goog.dom.classes');
+goog.require('goog.dom.ViewportSizeMonitor');
+goog.require('goog.style');
+goog.require('goog.events');
+goog.require('goog.events.EventType');
+goog.require('goog.math.Size');
 
 /**
  * A global variable that represents of our pagewide styles have been added
@@ -14,36 +21,38 @@ AppLayout.isStyleLoaded = false;
  */
 AppLayout.Panel = function(settings) {
     if (!AppLayout.isStyleLoaded) {
-        $('head').append($('<style>' +
+        var appLayoutStyles = goog.dom.htmlToDocumentFragment('<style>' +
             '.appFullScreenBody { overflow: hidden }' +
             '.appLayoutDiv { margin: 0; padding: 0; border: 0; }' +
             '.appLayoutHidden { display: none; height: 0px; width: 0px}' +
-            '</style>'));
+            '</style>');
+        goog.dom.appendChild(document.head, appLayoutStyles);
         AppLayout.isStyleLoaded = true;
     }
 
     this.parent = null;
     this.children = [];
     this.dock = null;
-    this.element = $('<div class="appLayoutDiv"></div>').get(0);
+    this.element = goog.dom.htmlToDocumentFragment('<div class="appLayoutDiv"></div>');
     this.contentHolder = null;
     this.hidden = false;
     this.width = '100%';
     this.height = '100%';
 
     if ('content' in settings) {
-        this.contentHolder = $('<div class="appLayoutDiv"></div>').get(0);
-        $(this.element).append(this.contentHolder);
+        this.contentHolder = goog.dom.htmlToDocumentFragment('<div class="appLayoutDiv"></div>');
+        goog.dom.append(this.element, this.contentHolder);
         if (typeof(settings.content) == 'string') {
-            $(this.contentHolder).html(settings.content);
+            var htmlContent = goog.dom.htmlToDocumentFragment(settings.content);
+            goog.dom.append(this.contentHolder, htmlContent);
         }
         else {
-            $(this.contentHolder).append(settings.contentElement);
+            goog.dom.append(this.contentHolder, settings.contentElement);
         }
     }
 
     if ('id' in settings) {
-        $(this.element).attr('id', settings.id);
+        goog.dom.setProperties(this.element, {'id':settings.id});
     }
 
     if ('width' in settings) {
@@ -59,7 +68,7 @@ AppLayout.Panel = function(settings) {
     }
 
     if ('cls' in settings) {
-        $(this.element).addClass(settings.cls);
+        goog.dom.classes.add(this.element, settings.cls);
     }
 
     if ('dock' in settings) {
@@ -89,7 +98,7 @@ AppLayout.Panel.prototype.addChild = function(panel) {
     }
 
     this.children.push(panel);
-    $(this.element).append(panel.getElement());
+    goog.dom.append(this.element, panel.getElement());
     panel.parent = this;
 };
 
@@ -103,7 +112,7 @@ AppLayout.Panel.prototype.removeChild = function(panel) {
             this.children.splice(0, 1);
         }
     }
-    $(this.element).remove(panel.getElement());
+    goog.dom.removeNode(panel.getElement());
     panel.parent = null;
 };
 
@@ -125,13 +134,19 @@ AppLayout.Panel.prototype.update = function() {
     }
 
     //determine topmost parent size
-    $(topMostParent.element).toggleClass('appLayoutHidden', topMostParent.hidden);
+    if (topMostParent.hidden) {
+        goog.dom.classes.add(topMostParent.element, 'appLayoutHidden');
+    }
+    else {
+        goog.dom.classes.remove(topMostParent.element, 'appLayoutHidden');
+    }
     if (!topMostParent.hidden) {
-        $(topMostParent.element).width(topMostParent.width);
-        $(topMostParent.element).height(topMostParent.height);
-        $(topMostParent.getElement()).css('position', 'relative');
+        goog.style.setWidth(topMostParent.element, topMostParent.width);
+        goog.style.setHeight(topMostParent.element, topMostParent.height);
+        goog.style.setStyle(topMostParent.getElement(), 'position', 'relative');
 
-        topMostParent.resizeAllChildren($(topMostParent.element).width(), $(topMostParent.element).height());
+        var size = goog.style.getSize(topMostParent.element);
+        topMostParent.resizeAllChildren(size.width, size.height);
     }
 };
 
@@ -169,55 +184,63 @@ AppLayout.Panel.prototype.resizeAllChildren = function(containerWidth, container
     for (var i = 0, len = currentPanel.children.length; i < len; i++) {
         var child = currentPanel.children[i];
         var childElement = child.getElement();
-        $(childElement).toggleClass('appLayoutHidden', child.hidden);
-        $(childElement).css('position', 'absolute');
+
+        if (child.hidden) {
+            goog.dom.classes.add(childElement, 'appLayoutHidden');
+        }
+        else {
+            goog.dom.classes.remove(childElement, 'appLayoutHidden');
+        }
+
+        goog.style.setStyle(childElement, 'position', 'absolute');
         if (!child.hidden) {
             var childConvertedWidth = currentPanel.convertChildSizeDimensionBasedOnParentDimension(child.width, containerWidth);
             var childConvertedHeight = currentPanel.convertChildSizeDimensionBasedOnParentDimension(child.height, containerHeight);
             if (child.dock == 'top') {
-                $(childElement).css('top', currentTop);
-                $(childElement).css('left', currentLeft);
-                $(childElement).width(remainingWidth);
-                $(childElement).height(childConvertedHeight);
+                goog.style.setStyle(childElement, 'top', currentTop);
+                goog.style.setStyle(childElement, 'left', currentLeft);
+                goog.style.setWidth(childElement, remainingWidth);
+                goog.style.setHeight(childElement, childConvertedHeight);
                 currentTop += childConvertedHeight;
                 remainingHeight -= childConvertedHeight;
             }
             else if (child.dock == 'bottom') {
-                $(childElement).css('top', remainingHeight + currentTop - childConvertedHeight);
-                $(childElement).css('left', currentLeft);
-                $(childElement).width(remainingWidth);
-                $(childElement).height(childConvertedHeight);
+                goog.style.setStyle(childElement, 'top', remainingHeight + currentTop - childConvertedHeight);
+                goog.style.setStyle(childElement, 'left', currentLeft);
+                goog.style.setWidth(childElement, remainingWidth);
+                goog.style.setHeight(childElement, childConvertedHeight);
                 remainingHeight -= childConvertedHeight;
             }
             else if (child.dock == 'left') {
-                $(childElement).css('top', currentTop);
-                $(childElement).css('left', currentLeft);
-                $(childElement).width(childConvertedWidth);
-                $(childElement).height(remainingHeight);
+                goog.style.setStyle(childElement, 'top', currentTop);
+                goog.style.setStyle(childElement, 'left', currentLeft);
+                goog.style.setWidth(childElement, childConvertedWidth);
+                goog.style.setHeight(childElement, remainingHeight);
                 currentLeft += childConvertedWidth;
                 remainingWidth -= childConvertedWidth;
             }
             else if (child.dock == 'right') {
-                $(childElement).css('top', currentTop);
-                $(childElement).css('left', remainingWidth + currentLeft - childConvertedWidth);
-                $(childElement).width(childConvertedWidth);
-                $(childElement).height(remainingHeight);
+                goog.style.setStyle(childElement, 'top', currentTop);
+                goog.style.setStyle(childElement, 'left', remainingWidth + currentLeft - childConvertedWidth);
+                goog.style.setWidth(childElement, childConvertedWidth);
+                goog.style.setHeight(childElement, remainingHeight);
                 remainingWidth -= childConvertedWidth;
             }
             else {
-                $(childElement).width(child.width);
-                $(childElement).height(child.height);
+                goog.style.setWidth(childElement, child.width);
+                goog.style.setHeight(childElement, child.height);
             }
-            child.resizeAllChildren($(childElement).width(), $(childElement).height());
+            var size = goog.style.getSize(childElement);
+            child.resizeAllChildren(size.width, size.height);
         }
     }
 
     if (this.contentHolder) {
-        $(currentPanel.contentHolder).css('position', 'absolute');
-        $(currentPanel.contentHolder).css('top', currentTop);
-        $(currentPanel.contentHolder).css('left', currentLeft);
-        $(currentPanel.contentHolder).width(remainingWidth);
-        $(currentPanel.contentHolder).height(remainingHeight);
+        goog.style.setStyle(currentPanel.contentHolder, 'position', 'absolute');
+        goog.style.setStyle(currentPanel.contentHolder, 'top', currentTop);
+        goog.style.setStyle(currentPanel.contentHolder, 'left', currentLeft);
+        goog.style.setWidth(currentPanel.contentHolder, remainingWidth);
+        goog.style.setHeight(currentPanel.contentHolder, remainingHeight);
     }
 };
 
@@ -228,29 +251,37 @@ AppLayout.Panel.prototype.makeFullScreen = function() {
     if (this.parent != null) {
         throw 'Cannot make a panel full screen that has a parent.  Please detach first.';
     }
-    var maxZ = Math.max.apply(null, $.map($('body > *'), function(e, n) {
-        if ($(e).css('position') == 'absolute')
-            return parseInt($(e).css('z-index')) || 1;
-    })
-    );
-    this.fullScreenContainer = $('<div class="appLayoutDiv" style="position: absolute; top: 0px; left:0px; z-index: ' + maxZ + '"></div>').get(0);
-    $('body').append(this.fullScreenContainer);
-    $(this.fullScreenContainer).append(this.getElement());
+    var maxZ = 1;
+
+    goog.dom.findNodes(document.body, function(n) {
+        if (!(n instanceof Text)) {
+            if (goog.style.getStyle(n, 'position') == 'absolute') {
+                maxZ = Math.max(maxZ, parseInt(goog.style.getStyle(n, 'z-index')) || 1);
+            }
+        }
+        return false;
+    });
+
+    this.fullScreenContainer = goog.dom.htmlToDocumentFragment(
+        '<div class="appLayoutDiv" style="position: absolute; top: 0px; left:0px; z-index: ' + maxZ + '"></div>');
+    goog.dom.append(document.body, this.fullScreenContainer);
+    goog.dom.append(this.fullScreenContainer, this.getElement());
 
     var context = this;
     var updateSize = function() {
-        var screenWidth = $(window).width();
-        var screenHeight = $(window).height();
-        $(context.fullScreenContainer).width(screenWidth);
-        $(context.fullScreenContainer).height(screenHeight);
-        context.width = screenWidth;
-        context.height = screenHeight;
+        var screenSize = goog.dom.getViewportSize(window);
+        goog.style.setWidth(context.fullScreenContainer, screenSize.width);
+        goog.style.setHeight(context.fullScreenContainer, screenSize.height);
+        context.width = screenSize.width;
+        context.height = screenSize.height;
         context.update();
     };
 
     updateSize();
-    $(window).resize(function() {
+
+    var vsm = new goog.dom.ViewportSizeMonitor();
+    goog.events.listen(vsm, goog.events.EventType.RESIZE, function(e) {
         updateSize();
     });
-    $('body').addClass('appFullScreenBody');
+    goog.dom.classes.add(document.body, 'appFullScreenBody');
 };
