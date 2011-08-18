@@ -1,0 +1,116 @@
+<html>
+<head>
+    <script src="jquery-1.6.2.min.js"></script>
+    <script src="applayout.js"></script>
+    <style>
+        .red {
+            background-color: red;
+        }
+
+        .blue {
+            background-color: blue;
+        }
+
+        .green {
+            background-color: green;
+        }
+
+        .purple {
+            background-color: purple;
+        }
+
+        .yellow {
+            background-color: yellow;
+        }
+
+        .pink {
+            background-color: pink;
+        }
+    </style>
+</head>
+<body>
+<input type="button" value="show" id="showBtn">
+<script>
+    var bluePanel = new AppLayout.Panel({
+        cls: "blue",
+        height: "50px",
+        width: "50px",
+        dock: "left"
+    });
+
+    var panel = new AppLayout.Panel({
+                id: "blah",
+                width: "600px",
+                height: "400px",
+                cls: "red",
+                content: 'Guten Tag <input type="button" id="btn" value="Hello world">',
+                children: [
+                    {
+                        cls: "blue",
+                        height: "50px",
+                        width: "100px",
+                        dock: "top"
+                    },
+                    {
+                        dock: "bottom",
+                        cls: "green",
+                        height: "50px",
+                        width: "200px"
+                    },
+                    {
+                        cls: "purple",
+                        height: "50px",
+                        width: "100px",
+                        dock: "top"
+                    },
+                    {
+                        dock: "bottom",
+                        cls: "yellow",
+                        height: "50px",
+                        width: "200px"
+                    },
+                    bluePanel,
+                    {
+                        cls: "green",
+                        height: "50px",
+                        width: "50px",
+                        dock: "right"
+                    },
+                    {
+                        cls: "green",
+                        height: "50px",
+                        width: "50px",
+                        dock: "left"
+                    },
+                    {
+                        cls: "purple",
+                        height: "50px",
+                        width: "50px",
+                        dock: "right",
+                        children: [
+                            {
+                                width: "50%",
+                                height: "50%",
+                                cls: "pink",
+                                content: "b l a h h a h a h a"
+                            }
+                        ]
+                    }
+                ]
+            }
+    );
+    var el = panel.getElement();
+    $('body').append(el);
+    panel.update();
+    $('#btn').click(function() {
+        panel.width = 800;
+        panel.height = 600;
+        panel.update();
+    });
+    $('#showBtn').click(function() {
+        bluePanel.hidden = true;
+        bluePanel.update();
+    });
+</script>
+</body>
+</html>
