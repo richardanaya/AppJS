@@ -11,6 +11,7 @@ AppLayout.isStyleLoaded = false;
 AppLayout.Panel = function(settings) {
     if (!AppLayout.isStyleLoaded) {
         $('head').append($('<style>' +
+            '.appFullScreenBody { overflow: hidden }' +
             '.appLayoutDiv { margin: 0; padding: 0; border: 0; }' +
             '.appLayoutHidden { display: none; height: 0px; width: 0px}' +
             '</style>'));
@@ -214,4 +215,5 @@ AppLayout.Panel.prototype.makeFullScreen = function() {
     $(window).resize(function() {
         updateSize();
     });
+    $('body').addClass("appFullScreenBody");
 };
