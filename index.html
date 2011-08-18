@@ -32,66 +32,24 @@
 <input type="button" value="show" id="showBtn">
 <script>
     var bluePanel = new AppLayout.Panel({
-        cls: "blue",
-        height: "50px",
-        width: "50px",
-        dock: "left"
+        cls: "blue", height: "50px", width: "50px", dock: "left"
     });
 
     var panel = new AppLayout.Panel({
-                id: "blah",
-                width: "600px",
-                height: "400px",
-                cls: "red",
+                id: "blah", cls: "red", width: "600px", height: "400px",
                 content: 'Guten Tag <input type="button" id="btn" value="Hello world">',
                 children: [
-                    {
-                        cls: "blue",
-                        height: "50px",
-                        width: "100px",
-                        dock: "top"
-                    },
-                    {
-                        dock: "bottom",
-                        cls: "green",
-                        height: "50px",
-                        width: "200px"
-                    },
-                    {
-                        cls: "purple",
-                        height: "50px",
-                        width: "100px",
-                        dock: "top"
-                    },
-                    {
-                        dock: "bottom",
-                        cls: "yellow",
-                        height: "50px",
-                        width: "200px"
-                    },
+                    { cls: "blue", height: "50px", width: "100px", dock: "top" },
+                    { cls: "green", height: "50px", width: "200px", dock: "bottom" },
+                    { cls: "purple", height: "50px", width: "100px", dock: "top" },
+                    { cls: "yellow", height: "50px",  width: "200px", dock: "bottom" },
                     bluePanel,
-                    {
-                        cls: "green",
-                        height: "50px",
-                        width: "50px",
-                        dock: "right"
-                    },
-                    {
-                        cls: "green",
-                        height: "50px",
-                        width: "50px",
-                        dock: "left"
-                    },
-                    {
-                        cls: "purple",
-                        height: "50px",
-                        width: "50px",
-                        dock: "right",
+                    { cls: "green", height: "50px", width: "50px", dock: "right" },
+                    { cls: "green", height: "50px", width: "50px", dock: "left" },
+                    { cls: "purple", height: "50px", width: "50px", dock: "right",
                         children: [
                             {
-                                width: "50%",
-                                height: "50%",
-                                cls: "pink",
+                                width: "50%", height: "50%", cls: "pink",
                                 content: "b l a h h a h a h a"
                             }
                         ]
@@ -99,6 +57,7 @@
                 ]
             }
     );
+
     var el = panel.getElement();
     $('body').append(el);
     panel.update();
