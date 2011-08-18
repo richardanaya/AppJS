@@ -26,7 +26,7 @@ AppLayout.Panel = function(settings) {
             '.appLayoutDiv { margin: 0; padding: 0; border: 0; }' +
             '.appLayoutHidden { display: none; height: 0px; width: 0px}' +
             '</style>');
-        goog.dom.append(document.head, appLayoutStyles);
+        goog.dom.append(document.getElementsByTagName("head")[0], appLayoutStyles);
         AppLayout.isStyleLoaded = true;
     }
 
