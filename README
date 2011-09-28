@@ -1,11 +1,10 @@
-AppLayoutJS
+AppJS
 
-This library was created to assist developers creating application like layouts
-we are used to having in native applications in javascript.  To name a few features
-this project hopes to obtain:
+This simpler helper library for developers creating application in javascript.
+Currently there are helpers for layout and events.  To name a few features:
 
+- A simple events system for MVC objects
 - Easily create dockable layouts
 - Support horizontal and vertical percentage sizes
 - Easily make any layout full screen and stay full screen even when window
 is resized
-- FUTURE: Support the ability proportionally fill unsized space of layout

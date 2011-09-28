@@ -1,7 +1,6 @@
 <html>
 <head>
-    <!--script src="jquery-1.6.2.min.js"></script-->
-    <script src="applayout.min.js"></script>
+    <script src="appjs.min.js"></script>
     <style>
         .red {
             background-color: red;
@@ -36,16 +35,16 @@
 <body>
 <input type="button" value="show" id="showBtn">
 <script>
-    var hoverPanel = new AppLayout.Panel({
+    var hoverPanel = new appjs.layout.Panel({
         cls: "hoverPanel",
         content: "Hello World!"
     });
 
-    var bluePanel = new AppLayout.Panel({
+    var bluePanel = new appjs.layout.Panel({
         cls: "blue", width: "50px", dock: "left"
     });
 
-    var panel = new AppLayout.Panel({
+    var panel = new appjs.layout.Panel({
                 id: "blah", cls: "red", width: "600px", height: "400px",
                 content: '<div style="float:left">left</div><div style="float:right">right</div>Guten Tag <input type="button" id="btn" value="Hello world">',
                 children: [
@@ -71,9 +70,6 @@
     panel.makeFullScreen();
 
     var toggle = true;
-    /*$('#btn').click(function() {
-        hoverPanel.makeFullScreen();
-    });*/
 </script>
 </body>
 </html>

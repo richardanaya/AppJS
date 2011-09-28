@@ -1,4 +1,4 @@
-goog.provide('AppLayout');
+goog.provide('appjs.layout');
 goog.require('goog.dom');
 goog.require('goog.dom.ViewportSizeMonitor');
 goog.require('goog.dom.classes');
@@ -12,22 +12,22 @@ goog.require('goog.style');
  * A global variable that represents of our pagewide styles have been added
  * @type {boolean}
  */
-AppLayout.isStyleLoaded = false;
+appjs.layout.isStyleLoaded = false;
 
 /**
  * A class that represents a panel.
  * @constructor
  * @param {object} settings A json representation of this panels settings and/or children.
  */
-AppLayout.Panel = function(settings) {
-    if (!AppLayout.isStyleLoaded) {
+appjs.layout.Panel = function(settings) {
+    if (!appjs.layout.isStyleLoaded) {
         var appLayoutStyles = goog.dom.htmlToDocumentFragment('<style>' +
             '.appFullScreenBody { overflow: hidden }' +
             '.appLayoutDiv { margin: 0; padding: 0; border: 0; }' +
             '.appLayoutHidden { display: none; height: 0px; width: 0px}' +
             '</style>');
-        goog.dom.append(document.getElementsByTagName("head")[0], appLayoutStyles);
-        AppLayout.isStyleLoaded = true;
+        goog.dom.append(document.getElementsByTagName('head')[0], appLayoutStyles);
+        appjs.layout.isStyleLoaded = true;
     }
 
     this.parent = null;
@@ -78,11 +78,11 @@ AppLayout.Panel = function(settings) {
     if ('children' in settings) {
         for (var i = 0, len = settings['children'].length; i < len; i++) {
             var child = settings['children'][i];
-            if (child instanceof AppLayout.Panel) {
+            if (child instanceof appjs.layout.Panel) {
                 this.addChild(child);
             }
             else {
-                this.addChild(new AppLayout.Panel(child));
+                this.addChild(new appjs.layout.Panel(child));
             }
         }
     }
@@ -92,7 +92,7 @@ AppLayout.Panel = function(settings) {
  * Add a panel as a child.
  * @param {AppPanel.Panel} panel The panel to add.
  */
-AppLayout.Panel.prototype.addChild = function(panel) {
+appjs.layout.Panel.prototype.addChild = function(panel) {
     if (panel.parent != null) {
         panel.parent.removeChild(panel);
     }
@@ -106,7 +106,7 @@ AppLayout.Panel.prototype.addChild = function(panel) {
  * Remove a child panel.
  * @param {AppPanel.Panel} panel The child panel to remove.
  */
-AppLayout.Panel.prototype.removeChild = function(panel) {
+appjs.layout.Panel.prototype.removeChild = function(panel) {
     for (var i = 0, len = this.children.length; i < len; i++) {
         if (this.children[i] === panel) {
             this.children.splice(0, 1);
@@ -120,14 +120,14 @@ AppLayout.Panel.prototype.removeChild = function(panel) {
  * Get the element of this panel.
  * @return {Node} The element of this panel.
  */
-AppLayout.Panel.prototype.getElement = function() {
+appjs.layout.Panel.prototype.getElement = function() {
     return this.element;
 };
 
 /**
  * Update the panel and resize all children appropriately.
  */
-AppLayout.Panel.prototype.update = function() {
+appjs.layout.Panel.prototype.update = function() {
     var topMostParent = this;
     while (topMostParent.parent != null) {
         topMostParent = topMostParent.parent;
@@ -156,7 +156,7 @@ AppLayout.Panel.prototype.update = function() {
  * @param {number} parentDimension The container dimension.
  * @return {number} The size of the child dimension in pixels.
  */
-AppLayout.Panel.prototype.convertChildSizeDimensionBasedOnParentDimension = function(childDimension, parentDimension) {
+appjs.layout.Panel.prototype.convertChildSizeDimensionBasedOnParentDimension = function(childDimension, parentDimension) {
     if (goog.string.endsWith(childDimension, 'px')) {
         return parseFloat(childDimension.substr(0, childDimension.length - 2));
     }
@@ -173,7 +173,7 @@ AppLayout.Panel.prototype.convertChildSizeDimensionBasedOnParentDimension = func
  * @param {number} containerWidth The width constraint.
  * @param {number} containerHeight The height constraint.
  */
-AppLayout.Panel.prototype.resizeAllChildren = function(containerWidth, containerHeight) {
+appjs.layout.Panel.prototype.resizeAllChildren = function(containerWidth, containerHeight) {
     var currentPanel = this;
 
     var currentLeft = 0;
@@ -247,7 +247,7 @@ AppLayout.Panel.prototype.resizeAllChildren = function(containerWidth, container
 /**
  * Make a panel full screen at the highest z-index.
  */
-AppLayout.Panel.prototype.makeFullScreen = function() {
+appjs.layout.Panel.prototype.makeFullScreen = function() {
     if (this.parent != null) {
         throw 'Cannot make a panel full screen that has a parent.  Please detach first.';
     }
@@ -286,9 +286,9 @@ AppLayout.Panel.prototype.makeFullScreen = function() {
     goog.dom.classes.add(document.body, 'appFullScreenBody');
 };
 
-goog.exportSymbol('AppLayout.Panel', AppLayout.Panel);
-goog.exportProperty(AppLayout.Panel.prototype, 'addChild', AppLayout.Panel.prototype.addChild);
-goog.exportProperty(AppLayout.Panel.prototype, 'removeChild', AppLayout.Panel.prototype.removeChild);
-goog.exportProperty(AppLayout.Panel.prototype, 'update', AppLayout.Panel.prototype.update);
-goog.exportProperty(AppLayout.Panel.prototype, 'getElement', AppLayout.Panel.prototype.getElement);
-goog.exportProperty(AppLayout.Panel.prototype, 'makeFullScreen', AppLayout.Panel.prototype.makeFullScreen);
+goog.exportSymbol('appjs.layout.Panel', appjs.layout.Panel);
+goog.exportProperty(appjs.layout.Panel.prototype, 'addChild', appjs.layout.Panel.prototype.addChild);
+goog.exportProperty(appjs.layout.Panel.prototype, 'removeChild', appjs.layout.Panel.prototype.removeChild);
+goog.exportProperty(appjs.layout.Panel.prototype, 'update', appjs.layout.Panel.prototype.update);
+goog.exportProperty(appjs.layout.Panel.prototype, 'getElement', appjs.layout.Panel.prototype.getElement);
+goog.exportProperty(appjs.layout.Panel.prototype, 'makeFullScreen', appjs.layout.Panel.prototype.makeFullScreen);

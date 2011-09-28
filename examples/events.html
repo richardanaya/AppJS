@@ -1,0 +1,17 @@
+<html>
+<head>
+    <script src="appjs.min.js"></script>
+</head>
+<body></body>
+<script>
+var pub = new appjs.events.Publisher();
+
+var test = function(data) {
+    alert(data);
+};
+
+appjs.events.connect(test,pub);
+
+pub.publish("Hello world");
+</script>
+</html>

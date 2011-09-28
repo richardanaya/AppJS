@@ -1,1 +1,1 @@
-cp output/applayout.min.js ../examples
+cp output/appjs.min.js ../examples
