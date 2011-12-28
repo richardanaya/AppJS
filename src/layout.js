@@ -254,7 +254,7 @@ appjs.layout.Panel.prototype.makeFullScreen = function() {
     var maxZ = 1;
 
     goog.dom.findNodes(document.body, function(n) {
-        if (!(n instanceof Text)) {
+        if (!(n instanceof Text|| n instanceof Comment)) {
             if (goog.style.getStyle(n, 'position') == 'absolute') {
                 maxZ = Math.max(maxZ, parseInt(goog.style.getStyle(n, 'z-index')) || 1);
             }
